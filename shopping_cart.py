@@ -1,8 +1,20 @@
 # shopping_cart.py
 
+selected_ids = []
+
+while True:
+    selected_id = input("PLEASE INPUT A PRODUCT IDENTIFIER: ")
+    if selected_id == "DONE":
+        break
+    else:
+        selected_ids.append(selected_id)
+
+def to_usd(my_price):
+    return "${:,.2f}".format(my_price)
+
+
 #name/website
 print("----------------------------------------------------")
-
 print("ORGANIC GREEN GROCERY")
 print("WWW.ORGANIC-GREEN-GROCERY.COM")
 
@@ -11,32 +23,37 @@ print("----------------------------------------------------")
 
 import time
 today = time.strftime('%l:%M%p %Z on %b %d, %Y')
-print("CHECK OUT AT:", today)
+print("CHECKOUT AT:", today)
 
-#inputs&outputs
+#outputs - products
 print("----------------------------------------------------")
 
+subtotal_price = 0
+
+print("SELECTED PRODUCTS:")
+
 import csv
-
-csv_file_path = "data/products.csv" #file path in my folder
-
-while True:
+csv_file_path = "data/products.csv" #file path in folder
+for selected_id in selected_ids:
     with open(csv_file_path, "r") as csv_file: #need to solve loop with multiple items
         reader = csv.DictReader(csv_file)
-        selected_id = input("PLEASE INPUT A PRODUCT IDENTIFIER: ")
-        if selected_id == "DONE":
-            break
-        else:
-            matching_product = [p for p in reader if str(p["id"]) == str(selected_id)]
-            matching_products = matching_product[0]
-            print("SELECTED PRODUCT: " + matching_products["name"] + " " + str(matching_products["price"]))
+        matching_products = [p for p in reader if str(p["id"]) == str(selected_id)]
+        matching_product = matching_products[0]
+        subtotal_price = subtotal_price + (float(matching_product["price"]))
+        print("..." + matching_product["name"] + " (" + to_usd(float(matching_product["price"])) + ")")
 
+#inputs&outputs - tax, subtotal and total
+print("---------------------------------")
+print("SUBTOTAL: " + to_usd(subtotal_price))
 
-#total_price = 0
-#print("TOTAL PRICE: " + str(total_price))
+tax_rate = 0.0875 #nyc tax rate
+tax = subtotal_price * tax_rate
+print("TAX: " + to_usd(tax))
 
-
+total_price = subtotal_price + tax
+print("TOTAL: " + to_usd(total_price))
 
 #thank you message
-#print("----------------------------------------------------")
-#print("THANK YOU!  PLEASE COME AGAIN")
+print("----------------------------------------------------")
+print("THANK YOU!  PLEASE COME AGAIN")
+print("----------------------------------------------------")
