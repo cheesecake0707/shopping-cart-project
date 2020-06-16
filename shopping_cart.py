@@ -1,13 +1,24 @@
 # shopping_cart.py
 
 selected_ids = []
+all_ids = []
+
+import csv
+csv_file_path = "data/products.csv" #file path in folder
 
 while True:
     selected_id = input("PLEASE INPUT A PRODUCT IDENTIFIER: ")
-    if selected_id == "DONE":
-        break
-    else:
-        selected_ids.append(selected_id)
+    with open(csv_file_path, "r") as csv_file:
+        reader = csv.DictReader(csv_file)
+        for ids in reader:
+            all_ids.append(ids["id"])
+        if selected_id == "DONE":
+            break
+        elif selected_id not in all_ids:
+            print("SOMETHING WENT WRONG, PLEASE TRY AGAIN")
+            exit()
+        else:
+                selected_ids.append(selected_id)
 
 def to_usd(my_price):
     return "${:,.2f}".format(my_price)
